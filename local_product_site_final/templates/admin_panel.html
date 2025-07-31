@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Manage Products</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #fafafa;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 16px 0;
+      box-sizing: border-box;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .product {
+      background: white;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    .product img {
+      max-width: 120px;
+      margin-bottom: 10px;
+      display: block;
+      border-radius: 6px;
+    }
+    .actions {
+      margin-top: 10px;
+    }
+    .actions form {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    a.logout {
+      float: right;
+      text-decoration: none;
+      font-weight: bold;
+      color: #777;
+      margin-bottom: 30px;
+    }
+    a.logout:hover {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+  <a class="logout" href="/admin/logout">Logout</a>
+
+  <section>
+    <h2>Add New Product</h2>
+    <form method="POST" action="/admin/add">
+      <input type="text" name="name" placeholder="Product Name" required />
+      <input type="text" name="image" placeholder="Image filename (e.g. product1.jpg)" required />
+      <textarea name="description" placeholder="Description" required rows="3"></textarea>
+      <input type="text" name="phone" placeholder="Phone Number" required />
+      <select name="category" required>
+        <option value="" disabled selected>Select Category</option>
+        <option value="General">General</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Home">Home</option>
+        <option value="Clothing">Clothing</option>
+      </select>
+      <button type="submit">Add Product</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Existing Products</h2>
+    {% for product in products %}
+      <div class="product">
+        <form method="POST" action="/admin/edit/{{ loop.index0 }}">
+          <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+          <input type="text" name="name" value="{{ product.name }}" required />
+          <input type="text" name="image" value="{{ product.image }}" required />
+          <textarea name="description" required rows="3">{{ product.description }}</textarea>
+          <input type="text" name="phone" value="{{ product.phone }}" required />
+          <select name="category" required>
+            <option value="General" {% if product.category == 'General' %}selected{% endif %}>General</option>
+            <option value="Electronics" {% if product.category == 'Electronics' %}selected{% endif %}>Electronics</option>
+            <option value="Home" {% if product.category == 'Home' %}selected{% endif %}>Home</option>
+            <option value="Clothing" {% if product.category == 'Clothing' %}selected{% endif %}>Clothing</option>
+          </select>
+          <div class="actions">
+            <button type="submit">Save</button>
+        </form>
+            <form method="POST" action="/admin/delete/{{ loop.index0 }}" style="display:inline;">
+              <button type="submit" onclick="return confirm('Delete this product?');">Delete</button>
+            </form>
+          </div>
+      </div>
+    {% else %}
+      <p>No products added yet.</p>
+    {% endfor %}
+  </section>
+</body>
+</html>
