@@ -1,0 +1,30 @@
+[
+    {
+        "name": "T-Shirt",
+        "image": "shirt.jpg",
+        "description": "Comfortable cotton shirt.",
+        "phone": "555-123-4567",
+        "category": "Clothing"
+    },
+    {
+        "name": "alfredo rgl;elg rosado",
+        "image": "dlk;dfk",
+        "description": "i dddddddddd;fkvkd lkv lkdflk lkd vlkd,vl kd",
+        "phone": "3747575757",
+        "category": "General"
+    },
+    {
+        "name": "testing 3",
+        "image": "/static/uploads\\images-1.png",
+        "description": "jhjhgjhgjhgjhgjh",
+        "phone": null,
+        "category": ""
+    },
+    {
+        "name": "ride info",
+        "image": "/static/uploads\\icon4.png",
+        "description": "kjnbfkjbgkjkdf",
+        "phone": null,
+        "category": "pics"
+    }
+]

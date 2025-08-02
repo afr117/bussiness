@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local Product Catalog</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="apple-touch-icon" href="/static/icons/manifest-icon-192.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        .top-tab, .bottom-tab {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+            background: #f9f9f9;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .top-tab-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .top-tab-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .top-tab-button:hover {
+            background-color: #5a6268;
+        }
+        .bottom-tab {
+            gap: 10px;
+        }
+        .bottom-links {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .bottom-links a {
+            margin: 0 6px;
+            text-decoration: none;
+            color: #333;
+        }
+        .bottom-links a:hover {
+            text-decoration: underline;
+        }
+        .bottom-tab .search-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .admin-button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .admin-button:hover {
+            background-color: #0056b3;
+        }
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px; /* space instead of spacer-tab */
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            width: 250px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Top Tab -->
+        <div class="top-tab">
+            <h1>Product Catalog</h1>
+            <div class="top-tab-buttons">
+                <a href="/alt" class="top-tab-button">Alt Site</a>
+                <a href="/" class="top-tab-button">Main Site</a>
+                <button class="top-tab-button">Button 3</button>
+                <button class="top-tab-button">Button 4</button>
+                <button class="top-tab-button">Button 5</button>
+                <button class="top-tab-button">Button 6</button>
+            </div>
+        </div>
+
+        <!-- Bottom Tab -->
+        <div class="bottom-tab">
+            <form method="get" class="search-form">
+                <input type="text" name="search" placeholder="Search..." value="{{ search }}">
+                <select name="category">
+                    <option value="">All Categories</option>
+                    {% for c in categories %}
+                    <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Search</button>
+            </form>
+            <div class="bottom-links">
+                <a href="#">Link 1</a> |
+                <a href="#">Link 2</a> |
+                <a href="#">Link 3</a>
+            </div>
+            <a href="{{ url_for('admin') }}" class="admin-button">Admin Login</a>
+        </div>
+    </header>
+
+    <div class="products">
+        {% for product in products %}
+        <div class="card">
+            <img src="{{ product.image }}" alt="{{ product.name }}">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p>Contact: {{ product.phone }}</p>
+            <p>Category: {{ product.category }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
