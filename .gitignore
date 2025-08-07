@@ -1,0 +1,8 @@
+# Ignore Electron build and other large binaries
+electron-wrapper/node_modules/
+electron-wrapper/*.exe
+*.log
+__pycache__/
+*.pyc
+.env
+.DS_Store

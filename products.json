@@ -1,19 +1,5 @@
 [
     {
-        "name": "T-Shirt",
-        "image": "shirt.jpg",
-        "description": "Comfortable cotton shirt.",
-        "phone": "555-123-4567",
-        "category": "Clothing"
-    },
-    {
-        "name": "alfredo rgl;elg rosado",
-        "image": "dlk;dfk",
-        "description": "i dddddddddd;fkvkd lkv lkdflk lkd vlkd,vl kd",
-        "phone": "3747575757",
-        "category": "General"
-    },
-    {
         "name": "testing 3",
         "image": "/static/uploads\\images-1.png",
         "description": "jhjhgjhgjhgjhgjh",
@@ -21,10 +7,43 @@
         "category": ""
     },
     {
+        "name": "car 1",
+        "price": 564.0,
+        "image": "/static/uploads\\back_two.jpg",
+        "description": "bumper and engine",
+        "phone": "",
+        "category": "Clothing"
+    },
+    {
+        "name": "cars",
+        "price": 456.0,
+        "image": "/static/uploads\\back_tree.jpg",
+        "description": "engine block and plastics",
+        "phone": "",
+        "category": "Clothing"
+    },
+    {
+        "name": "car entry",
+        "price": 243.0,
+        "image": "/static/uploads\\back_four.jpg",
+        "description": "rims and roof",
+        "phone": "",
+        "category": "Clothing"
+    },
+    {
         "name": "ride info",
-        "image": "/static/uploads\\icon4.png",
-        "description": "kjnbfkjbgkjkdf",
-        "phone": null,
-        "category": "pics"
+        "price": 234.0,
+        "image": "/static/uploads\\back_five.jpg",
+        "description": "springs and bumper",
+        "phone": "",
+        "category": "Clothing"
+    },
+    {
+        "name": "driversFY",
+        "price": 234.0,
+        "image": "/static/uploads\\back_two.jpg",
+        "description": "testing ",
+        "phone": "",
+        "category": "Clothing"
     }
 ]
