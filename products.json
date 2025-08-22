@@ -45,5 +45,13 @@
         "description": "testing ",
         "phone": "",
         "category": "Clothing"
+    },
+    {
+        "name": "prueba 1",
+        "price": 1000.0,
+        "image": "",
+        "description": "carro rojo",
+        "phone": "",
+        "category": "Clothing"
     }
 ]

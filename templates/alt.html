@@ -1,232 +1,222 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Alt Product Catalog</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link rel="manifest" href="/static/manifest.json">
-    <meta name="theme-color" content="#4CAF50">
-    <link rel="apple-touch-icon" href="/static/icons/manifest-icon-192.png">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
+  <meta charset="utf-8" />
+  <title>Recycled Auto Parts Market — Alt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}">
 
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+  <style>
+    :root{
+      --cp-blue:#0a3d62;
+      --cp-light:#eef3f8;
+      --cp-mid:#d9e3ef;
+      --cp-accent:#4e9ed4;
+      --cp-body:#f5f7fb;
+      --cp-text:#1d2a35;
+      --maxw:980px;
+    }
+    html,body{ margin:0; padding:0; background:var(--cp-body); color:var(--cp-text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif; line-height:1.35; }
+    .page-wrap{ max-width:var(--maxw); margin:0 auto; padding:0 10px 30px; box-sizing:border-box; }
 
-        header {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
+    .banner{ background: linear-gradient(180deg, var(--cp-blue) 0%, #124e7e 100%); color:#fff; padding:14px 0; border-bottom:4px solid var(--cp-accent); }
+    .banner-inner{ max-width:var(--maxw); margin:0 auto; padding:0 10px; display:flex; align-items:center; gap:16px; box-sizing:border-box; }
 
-        .tab-title {
-            width: 100%;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ccc;
-        }
+    /* BRAND ROW (logo + text) */
+    .brand-row{ display:flex; align-items:center; gap:12px; }
+    .site-logo{
+      display:block;
+      height:48px; width:auto;
+      border-radius:6px;
+      box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;
+    }
 
-        .tab-title h1 {
-            margin: 0;
-            font-family: 'Playfair Display', serif;
-            font-size: 38px;
-            font-weight: 600;
-        }
+    .site-title{ font-size:28px; font-weight:800; letter-spacing:.3px; margin:0; line-height:1.1; text-transform:uppercase; }
+    .site-sub{ font-size:13px; opacity:.9; margin-top:4px; }
+    .banner-actions{ margin-left:auto; display:flex; gap:8px; align-items:center; }
+    .banner-btn{ background:#fff; color:var(--cp-blue); border:1px solid #e6edf5; padding:8px 12px; border-radius:4px; font-weight:600; text-decoration:none; font-size:14px; box-shadow:0 1px 0 rgba(0,0,0,.05); }
+    .banner-btn:hover{ background:#f7fafd; }
 
-        .tab-buttons {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ccc;
-        }
+    /* ===== Full-bleed Quick Links (matches banner width) ===== */
+    .quicklinks-outer{
+      width:100%;
+      background:#f3f7fc;
+      border-top:1px solid #e6edf5;
+      border-bottom:1px solid #e6edf5;
+      box-shadow:0 1px 0 #ecf2f8 inset;
+    }
+    .quicklinks-inner{
+      max-width:var(--maxw);
+      margin:0 auto;
+      padding:0 10px;
+    }
+    .quicklinks-title{
+      margin:0;
+      padding:10px 0 0 0;
+      font-size:14px;
+      font-weight:800;
+      color:#2f506d;
+      text-transform:uppercase;
+      letter-spacing:.2px;
+    }
+    .quicklinks-row{
+      display:flex;
+      justify-content:space-evenly;
+      align-items:center;
+      gap:12px;
+      padding:10px 0 12px;
+      flex-wrap:wrap;
+    }
+    .quicklinks-row a{
+      color:#16496f;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:600;
+      padding:6px 10px;
+      border-radius:4px;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+    .quicklinks-row a:hover{
+      background:#e9f3ff;
+      border-color:#cfe5ff;
+    }
 
-        .top-tab-button {
-            background-color: white;
-            color: black;
-            border: 1px solid #ccc;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-        }
+    .search-block{ background:var(--cp-light); border:1px solid var(--cp-mid); border-top:none; padding:16px 14px; box-shadow:0 2px 0 #e6edf5 inset; border-radius:4px; margin-top:8px; }
+    .search-title{ margin:0 0 10px 0; color:var(--cp-blue); font-weight:800; font-size:18px; text-transform:uppercase; letter-spacing:.2px; }
+    .search-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:10px; }
+    .search-grid label{ font-size:12px; font-weight:700; color:#3a4a56; display:block; margin-bottom:4px; text-transform:uppercase; }
+    .search-grid input[type="text"], .search-grid select{ width:100%; padding:9px 10px; border:1px solid #cfd9e6; border-radius:4px; background:#fff; box-sizing:border-box; font-size:14px; }
+    .search-actions{ margin-top:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .btn-primary{ background:var(--cp-blue); color:#fff; border:none; padding:10px 16px; border-radius:4px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; cursor:pointer; }
+    .btn-primary:hover{ background:#0d4f80; }
+    .vin-line{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .vin-line input{ min-width:220px; }
 
-        .top-tab-button:hover {
-            background-color: #f0f0f0;
-        }
+    .panel{ background:#fff; border:1px solid #dfe7f1; box-shadow:0 1px 0 #ecf2f8; border-radius:4px; margin-top:16px; }
+    .content-pad{ padding:12px; }
+    .notice{ background:#fffbec; border:1px solid #f1e4b6; padding:10px 12px; border-radius:4px; font-size:14px; color:#5c4b1e; }
 
-        .tab-controls {
-            background-color: #4B0082;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 30px 10px 10px;
-            gap: 20px;
-            width: 100vw;
-            box-sizing: border-box;
-        }
+    .inventory{ margin-top:18px; }
+    .products{ display:flex; flex-wrap:wrap; justify-content:center; gap:16px; }
+    .card{ width:240px; background:#fff; border:1px solid #e3ebf5; border-radius:4px; box-shadow:0 1px 0 #ecf2f9; padding:10px; }
+    .card img{ width:100%; height:auto; border-radius:3px; background:#fff; }
+    .card h4{ margin:8px 0 4px; font-size:16px; color:#123f63; }
+    .card p{ margin:4px 0; font-size:13px; color:#203243; }
 
-        .tab-section {
-            display: flex;
-            align-items: center;
-        }
+    footer{ margin-top:30px; padding:16px 0 26px; text-align:center; color:#587188; font-size:13px; }
 
-        .search-form {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            padding-top: 10px;
-        }
-
-        .search-form input,
-        .search-form select {
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .search-form button {
-            background-color: white;
-            color: #4B0082;
-            font-weight: bold;
-            padding: 6px 12px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .bottom-links a {
-            color: white;
-            margin: 0 12px;
-            text-decoration: none;
-            font-size: 28px;
-            border-right: 3px solid white;
-            padding-right: 10px;
-        }
-
-        .bottom-links a:last-child {
-            border-right: none;
-        }
-
-        .bottom-links a:hover {
-            text-decoration: underline;
-        }
-
-        .admin-button {
-            background-color: white;
-            color: #4B0082;
-            padding: 6px 8px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .admin-button:hover {
-            background-color: #e0e0e0;
-        }
-
-        .products {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 40px 20px;
-            background: url('/static/images/products-bg.jpg') no-repeat center center;
-            background-size: cover;
-            box-sizing: border-box;
-        }
-
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 16px;
-            width: 250px;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-            background-color: white;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-            padding-bottom: 40px;
-            gap: 20px;
-        }
-
-        .social-icons img {
-            width: 40px;
-            height: 40px;
-        }
-    </style>
+    @media (max-width:1024px){
+      .search-grid{ grid-template-columns: 1fr 1fr; }
+      .vin-line{ margin-left:0; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <!-- Tab 1 -->
-        <div class="tab-title">
-            <h1>Product Catalog</h1>
+
+  <div class="banner">
+    <div class="banner-inner">
+      <div class="brand-row">
+        <img class="site-logo"
+             src="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}"
+             alt="Recycled Auto Parts logo"
+             width="48" height="48">
+        <div>
+          <h1 class="site-title">Recycled Auto Parts Market — Alt</h1>
+          <div class="site-sub">Alternate landing with same search experience</div>
+        </div>
+      </div>
+      <div class="banner-actions">
+        <a class="banner-btn" href="{{ url_for('admin') }}">Admin Login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-bleed Quick Links -->
+  <div class="quicklinks-outer">
+    <div class="quicklinks-inner">
+      <h3 class="quicklinks-title">Quick Links</h3>
+      <div class="quicklinks-row">
+        <a href="#">Find Engines</a>
+        <a href="#">Find Transmissions</a>
+        <a href="#">Body &amp; Sheet Metal</a>
+        <a href="#">Wheels &amp; Tires</a>
+        <a href="#">Electrical Components</a>
+        <a href="#">Interior Parts</a>
+        <!-- removed: Glass -->
+        <!-- removed: All Categories -->
+      </div>
+    </div>
+  </div>
+
+  <div class="page-wrap">
+    <div class="search-block panel">
+      <h2 class="search-title">Find Used Auto Parts</h2>
+
+      <form method="get" action="{{ url_for('alt_page') }}">
+        <div class="search-grid">
+          <div>
+            <label for="year">Year</label>
+            <select id="year" name="year">
+              <option value="">Any</option>
+              {% for y in range(2026, 1959, -1) %}
+              <option value="{{ y }}">{{ y }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="make">Make</label>
+            <input id="make" name="make" type="text" placeholder="e.g. Ford" />
+          </div>
+          <div>
+            <label for="model">Model</label>
+            <input id="model" name="model" type="text" placeholder="e.g. Focus" />
+          </div>
+          <div>
+            <label for="category">Part Category</label>
+            <select id="category" name="category">
+              <option value="">All Categories</option>
+              {% for c in categories %}
+              <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
 
-        <!-- Tab 2 -->
-        <div class="tab-buttons">
-            <a href="/alt" class="top-tab-button">Alt Site</a>
-            <a href="/" class="top-tab-button">Main Site</a>
-            <button class="top-tab-button">Button 3</button>
-            <button class="top-tab-button">Button 4</button>
-            <button class="top-tab-button">Button 5</button>
-            <button class="top-tab-button">Button 6</button>
-        </div>
+        <div class="search-actions">
+          <button class="btn-primary" type="submit">Search Parts</button>
 
-        <!-- Tab 3 -->
-        <div class="tab-controls">
-            <div class="tab-section">
-                <form method="get" class="search-form">
-                    <input type="text" name="search" placeholder="Search..." value="{{ search }}">
-                    <select name="category">
-                        <option value="">All Categories</option>
-                        {% for c in categories %}
-                        <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit">Search</button>
-                </form>
-            </div>
-            <div class="tab-section bottom-links">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
-            </div>
-            <div class="tab-section">
-                <a href="{{ url_for('admin') }}" class="admin-button">Admin Login</a>
-            </div>
+          <div class="vin-line">
+            <label for="vin"><strong>VIN Lookup:</strong></label>
+            <input id="vin" name="vin" type="text" maxlength="17" placeholder="Enter 17-digit VIN" />
+          </div>
         </div>
-    </header>
+      </form>
+    </div>
 
-    <div class="products">
-        {% for product in products %}
-        <div class="card">
+    <section class="panel content-pad">
+      <div class="notice">
+        This alternate page uses the same layout — you can customize copy and links independently.
+      </div>
+
+      <div class="inventory">
+        <div class="products">
+          {% for product in products %}
+          <div class="card">
             <img src="{{ product.image }}" alt="{{ product.name }}">
-            <h2>{{ product.name }}</h2>
+            <h4>{{ product.name }}</h4>
             <p>{{ product.description }}</p>
-            <p>Contact: {{ product.phone }}</p>
-            <p>Category: {{ product.category }}</p>
+            <p><strong>Phone:</strong> {{ product.phone }}</p>
+            <p><strong>Category:</strong> {{ product.category }}</p>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+      </div>
+    </section>
 
-    <div class="social-icons">
-        <a href="https://facebook.com" target="_blank"><img src="/static/images/facebook.png" alt="Facebook"></a>
-        <a href="https://instagram.com" target="_blank"><img src="/static/images/instagram.png" alt="Instagram"></a>
-    </div>
+    <footer>
+      © {{ 2025 }} Recycled Auto Parts Market — Alt.
+    </footer>
+  </div>
 </body>
 </html>
