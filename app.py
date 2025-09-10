@@ -35,7 +35,6 @@ def load_products():
     try:
         with open(PRODUCTS_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
-            # ensure list
             return data if isinstance(data, list) else []
     except Exception:
         return []
@@ -48,8 +47,7 @@ def _s(v):
     return str(v).strip().lower() if v is not None else ""
 
 def filter_products(items, year=None, make=None, model=None, category=None):
-    """Filter by exact category match if provided and by Y/M/M fields when present.
-       Falls back to simple text search if fields aren’t in the JSON."""
+    """Filter by exact category + Y/M/M. Falls back to text search if keys missing."""
     yq = str(year).strip() if year else ""
     mq = make.strip() if make else ""
     mdq = model.strip() if model else ""
@@ -57,28 +55,23 @@ def filter_products(items, year=None, make=None, model=None, category=None):
 
     out = []
     for p in items:
-        # category
         if cq and _s(p.get("category")) != _s(cq):
             continue
 
-        # text haystack for fallback
         hay = f"{p.get('name','')} {p.get('description','')} {p.get('make','')} {p.get('model','')} {p.get('year','')}"
 
-        # year
         if yq:
             if "year" in p and str(p.get("year")) != yq:
                 continue
             if "year" not in p and yq not in hay:
                 continue
 
-        # make
         if mq:
             if p.get("make") and _s(p.get("make")) != _s(mq):
                 continue
             if not p.get("make") and _s(mq) not in _s(hay):
                 continue
 
-        # model
         if mdq:
             if p.get("model") and _s(p.get("model")) != _s(mdq):
                 continue
@@ -90,8 +83,7 @@ def filter_products(items, year=None, make=None, model=None, category=None):
 
 def compute_categories(products):
     found = sorted({p.get("category","") for p in products if p.get("category")})
-    merged = PRESET_CATEGORIES + [c for c in found if c and c not in PRESET_CATEGORIES]
-    return merged
+    return PRESET_CATEGORIES + [c for c in found if c and c not in PRESET_CATEGORIES]
 
 def login_ok():
     if not session.get("admin"):
@@ -106,18 +98,11 @@ def login_ok():
     if datetime.utcnow() - last_dt > SESSION_TTL:
         session.clear()
         return False
-    # refresh TTL "touch"
     session["last_activity"] = datetime.utcnow().isoformat()
     return True
 
-def require_login():
-    if not login_ok():
-        return redirect(url_for("admin_login"))
-
-ALLOWED_EXT = {"png","jpg","jpeg","webp","gif"}
-
 def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXT
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in {"png","jpg","jpeg","webp","gif"}
 
 # -------- Routes --------
 @app.route("/", methods=["GET"])
@@ -158,11 +143,7 @@ def admin():
     if not login_ok():
         return redirect(url_for("admin_login"))
     products = load_products()
-    return render_template(
-        "admin_panel.html",
-        products=products,
-        categories=compute_categories(products)
-    )
+    return render_template("admin_panel.html", products=products, categories=compute_categories(products))
 
 @app.route("/login", methods=["GET", "POST"])
 def admin_login():
@@ -188,37 +169,48 @@ def add_product():
         return redirect(url_for("admin_login"))
 
     products = load_products()
+
     name = request.form.get("name", "").strip()
     description = request.form.get("description", "").strip()
-    price = float(request.form.get("price", 0) or 0)
+    price_raw = request.form.get("price", "").strip()
     category = request.form.get("category", "").strip()
-    make = request.form.get("make", "").strip() if "make" in request.form else ""
-    model = request.form.get("model", "").strip() if "model" in request.form else ""
-    year = request.form.get("year", "").strip() if "year" in request.form else ""
 
-    # default image path None
+    year_raw = request.form.get("year", "").strip()
+    make = request.form.get("make", "").strip()
+    model = request.form.get("model", "").strip()
+
+    # normalize types
+    price = 0.0
+    if price_raw:
+        try: price = float(price_raw)
+        except ValueError: price = 0.0
+
+    year_val = ""
+    if year_raw:
+        try: year_val = int(year_raw)
+        except ValueError: year_val = year_raw  # keep as string if non-numeric
+
+    # upload image
     image_url = ""
-
     file = request.files.get("image")
     if file and file.filename and allowed_file(file.filename):
         fname = secure_filename(file.filename)
-        # de-conflict name
-        name_part, ext = os.path.splitext(fname)
-        final = f"{name_part}_{uuid4().hex[:8]}{ext}"
+        root, ext = os.path.splitext(fname)
+        final = f"{root}_{uuid4().hex[:8]}{ext}"
         file.save(os.path.join(UPLOAD_FOLDER, final))
         image_url = f"/static/uploads/{final}"
 
+    # ALWAYS include year/make/model keys so they’re saved alongside product data
     prod = {
         "name": name,
         "description": description,
         "price": price,
         "category": category,
-        "image": image_url
+        "image": image_url,
+        "year": year_val,
+        "make": make,
+        "model": model
     }
-    # optional fields if present
-    if year: prod["year"] = year
-    if make: prod["make"] = make
-    if model: prod["model"] = model
 
     products.append(prod)
     save_products(products)
@@ -232,15 +224,12 @@ def delete_product(index):
 
     products = load_products()
     if 0 <= index < len(products):
-        # try to remove image file if it lives under /static/uploads
         img = products[index].get("image", "")
         if img and img.startswith("/static/uploads/"):
-            path = os.path.join(BASE_DIR, img.lstrip("/"))
-            if os.path.isfile(path):
-                try:
-                    os.remove(path)
-                except OSError:
-                    pass
+            try:
+                os.remove(os.path.join(BASE_DIR, img.lstrip("/")))
+            except OSError:
+                pass
         products.pop(index)
         save_products(products)
         flash("Product deleted.", "success")
@@ -248,7 +237,5 @@ def delete_product(index):
         flash("Invalid index.", "error")
     return redirect(url_for("admin"))
 
-# ------------- Run -------------
 if __name__ == "__main__":
-    # Enable reloader for local dev
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
