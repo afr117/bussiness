@@ -35,7 +35,7 @@
         <label>Price:</label><br>
         <input type="number" name="price" step="0.01" required><br>
 
-        <!-- Optional helpers if you want to store Y/M/M on products -->
+        <!-- Optional fields -->
         <label>Year (optional):</label><br>
         <input type="text" name="year" placeholder="e.g. 2018"><br>
 
@@ -70,14 +70,21 @@
     {% if products %}
         <ul>
         {% for product in products %}
+            {% set price = product.get('price') %}
             <li>
                 <strong>{{ product.name }}</strong>
-                {% if product.price is not none %} — ${{ '%.2f'|format(product.price) }}{% endif %}
+                {% if price is not none and price != '' %}
+                  — ${{ '%.2f'|format(price|float) }}
+                {% endif %}
                 {% if product.category %} <em>({{ product.category }})</em> {% endif %}<br>
+
                 {{ product.description }}<br>
+
                 {% if product.image %}
+                    <!-- product.image already stores a full /static/uploads/... path -->
                     <img src="{{ product.image }}" width="100" alt="product image"><br>
                 {% endif %}
+
                 <form action="{{ url_for('delete_product', index=loop.index0) }}" method="post" style="display:inline">
                     <button type="submit" onclick="return confirm('Delete this product?')">Delete</button>
                 </form>
