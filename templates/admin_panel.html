@@ -8,27 +8,21 @@
   <meta name="theme-color" content="#0d6efd">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 40px;
-        background-color: #f5f5f5;
-    }
-    .admin-container {
-        margin-top: 30px;
-    }
+    body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+    .admin-container { margin-top: 30px; }
+    input, textarea, select { padding: 6px; margin: 6px 0 12px; width: 320px; max-width: 100%; }
+    button { padding: 8px 12px; }
   </style>
 </head>
 <body>
 
   <h1>Admin Panel</h1>
 
-  <!-- Log Out Button -->
   <form action="{{ url_for('admin_logout') }}" method="get" style="text-align:right;">
       <button type="submit">Log Out</button>
   </form>
 
   <div class="admin-container">
-    <!-- Add New Product Form -->
     <h2>Add New Product</h2>
     {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
     <form action="{{ url_for('add_product') }}" method="post" enctype="multipart/form-data">
@@ -41,16 +35,22 @@
         <label>Price:</label><br>
         <input type="number" name="price" step="0.01" required><br>
 
+        <!-- Optional helpers if you want to store Y/M/M on products -->
+        <label>Year (optional):</label><br>
+        <input type="text" name="year" placeholder="e.g. 2018"><br>
+
+        <label>Make (optional):</label><br>
+        <input type="text" name="make" placeholder="e.g. Toyota"><br>
+
+        <label>Model (optional):</label><br>
+        <input type="text" name="model" placeholder="e.g. Camry"><br>
+
         <label>Category:</label><br>
         <select name="category" required>
             <option value="">Select Category</option>
-
-            <!-- preset categories first -->
             {% for c in preset_cats %}
               <option value="{{ c }}">{{ c }}</option>
             {% endfor %}
-
-            <!-- rest from backend, avoiding duplicates -->
             {% for c in categories %}
               {% if c not in preset_cats %}
                 <option value="{{ c }}">{{ c }}</option>
@@ -66,21 +66,18 @@
 
     <hr>
 
-    <!-- Existing Products -->
     <h2>Existing Products</h2>
     {% if products %}
         <ul>
         {% for product in products %}
             <li>
-                <strong>{{ product.name }}</strong> — ${{ product.price }}
-                {% if product.category %} <em>({{ product.category }})</em> {% endif %}
-                <br>
+                <strong>{{ product.name }}</strong>
+                {% if product.price is not none %} — ${{ '%.2f'|format(product.price) }}{% endif %}
+                {% if product.category %} <em>({{ product.category }})</em> {% endif %}<br>
                 {{ product.description }}<br>
                 {% if product.image %}
-                    <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" width="100"><br>
+                    <img src="{{ product.image }}" width="100" alt="product image"><br>
                 {% endif %}
-
-                <!-- Delete Button -->
                 <form action="{{ url_for('delete_product', index=loop.index0) }}" method="post" style="display:inline">
                     <button type="submit" onclick="return confirm('Delete this product?')">Delete</button>
                 </form>
@@ -92,7 +89,6 @@
         <p>No products added yet.</p>
     {% endif %}
 
-    <!-- Back to Home -->
     <p><a href="{{ url_for('home') }}">Back to Site</a></p>
   </div>
 
