@@ -20,6 +20,7 @@
       --cp-body:#f5f7fb;
       --cp-text:#1d2a35;
       --maxw:980px; /* fixed page width */
+      --tooltip-bg:#ffffff;
     }
 
     html,body{
@@ -140,6 +141,47 @@
       border-color:#cfe5ff;
     }
 
+    /* Hovercard (About/Contact) */
+    .hovercard{ position:relative; display:inline-block; }
+    .hovercard:focus-within .hc-content,
+    .hovercard:hover .hc-content{
+      opacity:1; visibility:visible; transform:translate(-50%, 0);
+      pointer-events:auto;
+    }
+    .hc-trigger{ outline:none; }
+    .hc-content{
+      position:absolute;
+      left:50%; top:120%;
+      transform:translate(-50%, 8px);
+      width:260px;
+      background:var(--tooltip-bg);
+      border:1px solid #e6edf5;
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+      border-radius:6px;
+      padding:10px 12px;
+      font-size:13px;
+      color:#203243;
+      z-index:50;
+      opacity:0; visibility:hidden; pointer-events:none;
+      transition:opacity .15s ease, transform .15s ease, visibility .15s ease;
+    }
+    .hc-content::before{
+      content:"";
+      position:absolute;
+      top:-6px; left:50%;
+      transform:translateX(-50%);
+      border-width:6px; border-style:solid;
+      border-color:transparent transparent #e6edf5 transparent;
+    }
+    .hc-content::after{
+      content:"";
+      position:absolute;
+      top:-5px; left:50%;
+      transform:translateX(-50%);
+      border-width:5px; border-style:solid;
+      border-color:transparent transparent var(--tooltip-bg) transparent;
+    }
+
     /* Main search tab */
     .search-block{
       background:var(--cp-light);
@@ -232,35 +274,6 @@
       color:#5c4b1e;
     }
 
-    /* RIGHT NEWS BOX LAYOUT */
-    .content-with-news{
-      display:flex;
-      align-items:flex-start;
-      gap:16px;           /* space between products and news box */
-      margin-top:16px;    /* separates from search block */
-    }
-    .content-main{ flex:1; min-width:0; }
-    .news-box{
-      width:220px;              /* thin sidebar */
-      position:sticky;
-      top:12px;                 /* stays visible while scrolling */
-      align-self:flex-start;
-    }
-    .news-head{
-      background:var(--cp-blue);
-      color:#fff;
-      padding:10px 12px;
-      border-radius:4px 4px 0 0;
-      font-size:14px;
-      font-weight:800;
-      letter-spacing:.2px;
-      text-transform:uppercase;
-    }
-    .news-body{ padding:10px 12px; }
-    .news-item{ margin:0 0 8px 0; font-size:13px; color:#203243; }
-    .news-item a{ color:#0a3d62; text-decoration:none; font-weight:700; }
-    .news-item a:hover{ text-decoration:underline; }
-
     /* Product cards grid */
     .inventory{ margin-top:18px; }
     .products{
@@ -307,8 +320,6 @@
     @media (max-width:1024px){
       .search-grid{ grid-template-columns: 1fr 1fr; }
       .vin-line{ margin-left:0; }
-      .content-with-news{ flex-direction:column; }
-      .news-box{ width:auto; position:static; }
     }
   </style>
 </head>
@@ -338,21 +349,39 @@
     <div class="quicklinks-inner">
       <h3 class="quicklinks-title">Quick Links</h3>
       <div class="quicklinks-row">
-        <a href="#">Find Engines</a>
-        <a href="#">Find Transmissions</a>
-        <a href="#">Body &amp; Sheet Metal</a>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="#search">Buy Parts</a>
+        <a href="#">Language</a>
+        <!-- restored buttons -->
         <a href="#">Wheels &amp; Tires</a>
         <a href="#">Electrical Components</a>
         <a href="#">Interior Parts</a>
+
+        <!-- About Us hovercard -->
+        <div class="hovercard">
+          <a href="#" class="hc-trigger" tabindex="0">About Us</a>
+          <div class="hc-content" role="dialog" aria-label="About Us">
+            We’re a local network of recyclers offering quality-tested used parts at fair prices. Warranty available on most items.
+          </div>
+        </div>
+
+        <!-- Contact Us hovercard -->
+        <div class="hovercard">
+          <a href="#" class="hc-trigger" tabindex="0">Contact Us</a>
+          <div class="hc-content" role="dialog" aria-label="Contact Us">
+            Call <strong>(555) 123-4567</strong> or email <strong>sales@example.com</strong>. 123 Salvage Rd, Springfield, IL.
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="page-wrap">
     <!-- Search tab -->
-    <div class="search-block">
+    <div id="search" class="search-block">
       <h2 class="search-title">Find Used Auto Parts</h2>
 
+      {% set preset_cats = ["Wheels & Tires","Electrical Components","Interior Parts"] %}
       <form method="get" action="{{ url_for('home') }}">
         <div class="search-grid">
           <div>
@@ -376,8 +405,15 @@
             <label for="category">Part Category</label>
             <select id="category" name="category">
               <option value="">All Categories</option>
+              <!-- preset categories shown first -->
+              {% for name in preset_cats %}
+                <option value="{{ name }}" {% if selected_category == name %}selected{% endif %}>{{ name }}</option>
+              {% endfor %}
+              <!-- rest of categories, avoiding duplicates -->
               {% for c in categories %}
-              <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
+                {% if c not in preset_cats %}
+                  <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
+                {% endif %}
               {% endfor %}
             </select>
           </div>
@@ -394,40 +430,26 @@
       </form>
     </div>
 
-    <!-- Content + Right News -->
-    <div class="content-with-news">
-      <div class="content-main">
-        <section class="panel content-pad">
-          <div class="notice">
-            Tip: Start with Year/Make/Model or paste your VIN for a faster, more accurate match.
-          </div>
-
-          <div class="inventory">
-            <div class="products">
-              {% for product in products %}
-              <div class="card">
-                <img src="{{ product.image }}" alt="{{ product.name }}">
-                <h4>{{ product.name }}</h4>
-                <p>{{ product.description }}</p>
-                <p><strong>Phone:</strong> {{ product.phone }}</p>
-                <p><strong>Category:</strong> {{ product.category }}</p>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-        </section>
+    <!-- Content (notice + products) -->
+    <section class="panel content-pad">
+      <div class="notice">
+        Tip: Start with Year/Make/Model or paste your VIN for a faster, more accurate match.
       </div>
 
-      <!-- Slim News Box -->
-      <aside class="news-box panel" aria-label="Latest News">
-        <div class="news-head">News</div>
-        <div class="news-body">
-          <p class="news-item"><a href="#">Labor Day Sale</a> — 10% off Engines &amp; Transmissions this week.</p>
-          <p class="news-item"><a href="#">New Arrivals</a> — Fresh inventory from 2018–2021 SUVs.</p>
-          <p class="news-item"><a href="#">Local Pickup</a> — Same-day pickup available. Call for details.</p>
+      <div class="inventory">
+        <div class="products">
+          {% for product in products %}
+          <div class="card">
+            <img src="{{ product.image }}" alt="{{ product.name }}">
+            <h4>{{ product.name }}</h4>
+            <p>{{ product.description }}</p>
+            <p><strong>Phone:</strong> {{ product.phone }}</p>
+            <p><strong>Category:</strong> {{ product.category }}</p>
+          </div>
+          {% endfor %}
         </div>
-      </aside>
-    </div>
+      </div>
+    </section>
 
     <footer>
       © {{ 2025 }} Recycled Auto Parts Market – Layout adapted for your catalog.
