@@ -75,11 +75,37 @@
 
     footer{ margin-top:30px; padding:16px 0 26px; text-align:center; color:#587188; font-size:13px; }
 
+    /* Tablet */
     @media (max-width:1024px){
       .search-grid{ grid-template-columns: 1fr 1fr; }
       .vin-line{ margin-left:0; }
       .content-with-news{ flex-direction:column; }
       .news-box{ width:auto; position:static; }
+    }
+
+    /* Mobile polish */
+    @media (max-width: 600px){
+      .banner-inner{ flex-wrap:wrap; gap:10px; }
+      .site-title{ font-size:20px; }
+      .site-sub{ font-size:12px; }
+
+      .quicklinks-row{
+        justify-content:flex-start;
+        gap:8px;
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom:10px;
+      }
+      .quicklinks-row a{ white-space:nowrap; }
+
+      .search-grid{ grid-template-columns: 1fr; }
+
+      .card{ width:100%; }
+
+      .content-with-news{ flex-direction:column; gap:12px; }
+      .news-box{ width:100%; position:static; }
+
+      .hc-content{ width:min(88vw, 320px); left:50%; transform:translate(-50%, 8px); }
     }
   </style>
 </head>
@@ -132,8 +158,7 @@
     <div id="search" class="search-block panel">
       <h2 class="search-title">
         Find Used Auto Parts
-        {% set filter_category = selected_category %}
-        {% if filter_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ filter_category }}</small>{% endif %}
+        {% if selected_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ selected_category }}</small>{% endif %}
       </h2>
 
       {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
@@ -252,17 +277,12 @@
       const modelSel = document.getElementById('model');
 
       Object.keys(MAKE_MODELS).sort().forEach(m=>{
-        const opt = document.createElement('option');
-        opt.value = m; opt.textContent = m;
-        makeSel.appendChild(opt);
+        const opt = document.createElement('option'); opt.value = m; opt.textContent = m; makeSel.appendChild(opt);
       });
 
       function fillModelsForMake(mk, presetModel=''){
         modelSel.innerHTML = '';
-        const any = document.createElement('option');
-        any.value = ''; any.textContent = 'Any';
-        modelSel.appendChild(any);
-
+        const any = document.createElement('option'); any.value = ''; any.textContent = 'Any'; modelSel.appendChild(any);
         if (mk && MAKE_MODELS[mk]) {
           MAKE_MODELS[mk].forEach(md=>{
             const o=document.createElement('option'); o.value=md; o.textContent=md;
