@@ -274,6 +274,35 @@
       color:#5c4b1e;
     }
 
+    /* RIGHT NEWS BOX LAYOUT */
+    .content-with-news{
+      display:flex;
+      align-items:flex-start;
+      gap:16px;           /* space between products and news box */
+      margin-top:16px;    /* separates from search block */
+    }
+    .content-main{ flex:1; min-width:0; }
+    .news-box{
+      width:220px;              /* thin sidebar */
+      position:sticky;
+      top:12px;                 /* stays visible while scrolling */
+      align-self:flex-start;
+    }
+    .news-head{
+      background:var(--cp-blue);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:4px 4px 0 0;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+    .news-body{ padding:10px 12px; }
+    .news-item{ margin:0 0 8px 0; font-size:13px; color:#203243; }
+    .news-item a{ color:#0a3d62; text-decoration:none; font-weight:700; }
+    .news-item a:hover{ text-decoration:underline; }
+
     /* Product cards grid */
     .inventory{ margin-top:18px; }
     .products{
@@ -320,6 +349,8 @@
     @media (max-width:1024px){
       .search-grid{ grid-template-columns: 1fr 1fr; }
       .vin-line{ margin-left:0; }
+      .content-with-news{ flex-direction:column; }
+      .news-box{ width:auto; position:static; }
     }
   </style>
 </head>
@@ -430,26 +461,40 @@
       </form>
     </div>
 
-    <!-- Content (notice + products) -->
-    <section class="panel content-pad">
-      <div class="notice">
-        Tip: Start with Year/Make/Model or paste your VIN for a faster, more accurate match.
+    <!-- Content + Right News -->
+    <div class="content-with-news">
+      <div class="content-main">
+        <section class="panel content-pad">
+          <div class="notice">
+            Tip: Start with Year/Make/Model or paste your VIN for a faster, more accurate match.
+          </div>
+
+          <div class="inventory">
+            <div class="products">
+              {% for product in products %}
+              <div class="card">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <h4>{{ product.name }}</h4>
+                <p>{{ product.description }}</p>
+                <p><strong>Phone:</strong> {{ product.phone }}</p>
+                <p><strong>Category:</strong> {{ product.category }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div class="inventory">
-        <div class="products">
-          {% for product in products %}
-          <div class="card">
-            <img src="{{ product.image }}" alt="{{ product.name }}">
-            <h4>{{ product.name }}</h4>
-            <p>{{ product.description }}</p>
-            <p><strong>Phone:</strong> {{ product.phone }}</p>
-            <p><strong>Category:</strong> {{ product.category }}</p>
-          </div>
-          {% endfor %}
+      <!-- Slim News Box -->
+      <aside class="news-box panel" aria-label="Latest News">
+        <div class="news-head">News</div>
+        <div class="news-body">
+          <p class="news-item"><a href="#">Labor Day Sale</a> — 10% off Engines &amp; Transmissions this week.</p>
+          <p class="news-item"><a href="#">New Arrivals</a> — Fresh inventory from 2018–2021 SUVs.</p>
+          <p class="news-item"><a href="#">Local Pickup</a> — Same-day pickup available. Call for details.</p>
         </div>
-      </div>
-    </section>
+      </aside>
+    </div>
 
     <footer>
       © {{ 2025 }} Recycled Auto Parts Market – Layout adapted for your catalog.
