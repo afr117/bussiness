@@ -12,6 +12,7 @@
     .admin-container { margin-top: 30px; }
     input, textarea, select { padding: 6px; margin: 6px 0 12px; width: 320px; max-width: 100%; }
     button { padding: 8px 12px; }
+    .muted { color:#555; font-size:13px; }
   </style>
 </head>
 <body>
@@ -35,7 +36,7 @@
         <label>Price:</label><br>
         <input type="number" name="price" step="0.01" required><br>
 
-        <!-- Optional fields -->
+        <!-- Save Y/M/M with the product -->
         <label>Year (optional):</label><br>
         <input type="text" name="year" placeholder="e.g. 2018"><br>
 
@@ -48,9 +49,7 @@
         <label>Category:</label><br>
         <select name="category" required>
             <option value="">Select Category</option>
-            {% for c in preset_cats %}
-              <option value="{{ c }}">{{ c }}</option>
-            {% endfor %}
+            {% for c in preset_cats %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
             {% for c in categories %}
               {% if c not in preset_cats %}
                 <option value="{{ c }}">{{ c }}</option>
@@ -73,15 +72,19 @@
             {% set price = product.get('price') %}
             <li>
                 <strong>{{ product.name }}</strong>
-                {% if price is not none and price != '' %}
-                  — ${{ '%.2f'|format(price|float) }}
-                {% endif %}
+                {% if price is not none and price != '' %} — ${{ '%.2f'|format(price|float) }}{% endif %}
                 {% if product.category %} <em>({{ product.category }})</em> {% endif %}<br>
+
+                <!-- Show Year / Make / Model if present -->
+                <span class="muted">
+                  {% if product.year %}Year: {{ product.year }}{% endif %}
+                  {% if product.make %}{% if product.year %} • {% endif %}Make: {{ product.make }}{% endif %}
+                  {% if product.model %}{% if product.year or product.make %} • {% endif %}Model: {{ product.model }}{% endif %}
+                </span><br>
 
                 {{ product.description }}<br>
 
                 {% if product.image %}
-                    <!-- product.image already stores a full /static/uploads/... path -->
                     <img src="{{ product.image }}" width="100" alt="product image"><br>
                 {% endif %}
 
