@@ -30,6 +30,7 @@
   <div class="admin-container">
     <!-- Add New Product Form -->
     <h2>Add New Product</h2>
+    {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
     <form action="{{ url_for('add_product') }}" method="post" enctype="multipart/form-data">
         <label>Product Name:</label><br>
         <input type="text" name="name" required><br>
@@ -43,8 +44,17 @@
         <label>Category:</label><br>
         <select name="category" required>
             <option value="">Select Category</option>
+
+            <!-- preset categories first -->
+            {% for c in preset_cats %}
+              <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+
+            <!-- rest from backend, avoiding duplicates -->
             {% for c in categories %}
+              {% if c not in preset_cats %}
                 <option value="{{ c }}">{{ c }}</option>
+              {% endif %}
             {% endfor %}
         </select><br>
 
