@@ -61,7 +61,7 @@
     .site-logo{
       display:block;
       height:48px; width:auto;
-      border-radius:6px; /* soft corners for the black tile logo */
+      border-radius:6px;
       box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;
     }
     .site-title{
@@ -380,10 +380,11 @@
       <h3 class="quicklinks-title">Quick Links</h3>
       <div class="quicklinks-row">
         <a href="{{ url_for('home') }}">Home</a>
-        <a href="#search">Buy Parts</a>
+        <!-- Buy Parts now links to ALT filtered by 'Buy Parts' -->
+        <a href="{{ url_for('alt_page', category='Buy Parts') }}">Buy Parts</a>
         <a href="#">Language</a>
 
-        <!-- category links now jump to ALT with a category query -->
+        <!-- category links go to ALT with category filter -->
         <a href="{{ url_for('alt_page', category='Wheels & Tires') }}">Wheels &amp; Tires</a>
         <a href="{{ url_for('alt_page', category='Electrical Components') }}">Electrical Components</a>
         <a href="{{ url_for('alt_page', category='Interior Parts') }}">Interior Parts</a>
@@ -412,7 +413,7 @@
     <div id="search" class="search-block">
       <h2 class="search-title">Find Used Auto Parts</h2>
 
-      {% set preset_cats = ["Wheels & Tires","Electrical Components","Interior Parts"] %}
+      {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
       <form method="get" action="{{ url_for('home') }}">
         <div class="search-grid">
           <div>
@@ -425,16 +426,15 @@
             </select>
           </div>
 
-          <!-- MAKE: now a select -->
+          <!-- MAKE: select -->
           <div>
             <label for="make">Make</label>
             <select id="make" name="make">
               <option value="">Any</option>
-              <!-- JS will populate additional makes -->
             </select>
           </div>
 
-          <!-- MODEL: populated based on Make -->
+          <!-- MODEL: select populated by JS -->
           <div>
             <label for="model">Model</label>
             <select id="model" name="model" disabled>
