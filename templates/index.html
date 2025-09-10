@@ -213,7 +213,6 @@
       margin-bottom:4px;
       text-transform:uppercase;
     }
-    .search-grid input[type="text"],
     .search-grid select{
       width:100%;
       padding:9px 10px;
@@ -278,14 +277,14 @@
     .content-with-news{
       display:flex;
       align-items:flex-start;
-      gap:16px;           /* space between products and news box */
-      margin-top:16px;    /* separates from search block */
+      gap:16px;
+      margin-top:16px;
     }
     .content-main{ flex:1; min-width:0; }
     .news-box{
-      width:220px;              /* thin sidebar */
+      width:220px;
       position:sticky;
-      top:12px;                 /* stays visible while scrolling */
+      top:12px;
       align-self:flex-start;
     }
     .news-head{
@@ -383,10 +382,11 @@
         <a href="{{ url_for('home') }}">Home</a>
         <a href="#search">Buy Parts</a>
         <a href="#">Language</a>
-        <!-- restored buttons -->
-        <a href="#">Wheels &amp; Tires</a>
-        <a href="#">Electrical Components</a>
-        <a href="#">Interior Parts</a>
+
+        <!-- category links now jump to ALT with a category query -->
+        <a href="{{ url_for('alt_page', category='Wheels & Tires') }}">Wheels &amp; Tires</a>
+        <a href="{{ url_for('alt_page', category='Electrical Components') }}">Electrical Components</a>
+        <a href="{{ url_for('alt_page', category='Interior Parts') }}">Interior Parts</a>
 
         <!-- About Us hovercard -->
         <div class="hovercard">
@@ -424,14 +424,24 @@
               {% endfor %}
             </select>
           </div>
+
+          <!-- MAKE: now a select -->
           <div>
             <label for="make">Make</label>
-            <input id="make" name="make" type="text" placeholder="e.g. Toyota" />
+            <select id="make" name="make">
+              <option value="">Any</option>
+              <!-- JS will populate additional makes -->
+            </select>
           </div>
+
+          <!-- MODEL: populated based on Make -->
           <div>
             <label for="model">Model</label>
-            <input id="model" name="model" type="text" placeholder="e.g. Camry" />
+            <select id="model" name="model" disabled>
+              <option value="">Any</option>
+            </select>
           </div>
+
           <div>
             <label for="category">Part Category</label>
             <select id="category" name="category">
@@ -500,5 +510,53 @@
       © {{ 2025 }} Recycled Auto Parts Market – Layout adapted for your catalog.
     </footer>
   </div>
+
+  <!-- Lightweight Make→Model population -->
+  <script>
+    (function(){
+      const MAKE_MODELS = {
+        "Ford": ["F-150","Focus","Fusion","Escape","Explorer"],
+        "Chevrolet": ["Silverado","Malibu","Cruze","Equinox","Tahoe"],
+        "Toyota": ["Camry","Corolla","RAV4","Tacoma","Highlander"],
+        "Honda": ["Civic","Accord","CR-V","Pilot","Odyssey"],
+        "Nissan": ["Altima","Sentra","Rogue","Frontier","Pathfinder"],
+        "BMW": ["3 Series","5 Series","X3","X5"],
+        "Mercedes-Benz": ["C-Class","E-Class","GLC","GLE"],
+        "Volkswagen": ["Jetta","Passat","Tiguan","Golf"]
+      };
+
+      const makeSel = document.getElementById('make');
+      const modelSel = document.getElementById('model');
+
+      // populate makes
+      Object.keys(MAKE_MODELS).sort().forEach(m=>{
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        makeSel.appendChild(opt);
+      });
+
+      function fillModelsForMake(mk){
+        modelSel.innerHTML = '';
+        const any = document.createElement('option');
+        any.value = ''; any.textContent = 'Any';
+        modelSel.appendChild(any);
+
+        if (mk && MAKE_MODELS[mk]) {
+          MAKE_MODELS[mk].forEach(md=>{
+            const o = document.createElement('option');
+            o.value = md; o.textContent = md;
+            modelSel.appendChild(o);
+          });
+          modelSel.disabled = false;
+        } else {
+          modelSel.disabled = false; // allow Any even with empty make
+        }
+      }
+
+      makeSel.addEventListener('change', (e)=> fillModelsForMake(e.target.value));
+      // initialize
+      fillModelsForMake('');
+    })();
+  </script>
 </body>
 </html>
