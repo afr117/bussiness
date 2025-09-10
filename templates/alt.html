@@ -26,12 +26,9 @@
     /* BRAND ROW (logo + text) */
     .brand-row{ display:flex; align-items:center; gap:12px; }
     .site-logo{
-      display:block;
-      height:48px; width:auto;
-      border-radius:6px;
-      box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;
+      display:block; height:48px; width:auto;
+      border-radius:6px; box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;
     }
-
     .site-title{ font-size:28px; font-weight:800; letter-spacing:.3px; margin:0; line-height:1.1; text-transform:uppercase; }
     .site-sub{ font-size:13px; opacity:.9; margin-top:4px; }
     .banner-actions{ margin-left:auto; display:flex; gap:8px; align-items:center; }
@@ -139,6 +136,35 @@
     .content-pad{ padding:12px; }
     .notice{ background:#fffbec; border:1px solid #f1e4b6; padding:10px 12px; border-radius:4px; font-size:14px; color:#5c4b1e; }
 
+    /* RIGHT NEWS BOX LAYOUT */
+    .content-with-news{
+      display:flex;
+      align-items:flex-start;
+      gap:16px;
+      margin-top:16px;
+    }
+    .content-main{ flex:1; min-width:0; }
+    .news-box{
+      width:220px;
+      position:sticky;
+      top:12px;
+      align-self:flex-start;
+    }
+    .news-head{
+      background:var(--cp-blue);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:4px 4px 0 0;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+    .news-body{ padding:10px 12px; }
+    .news-item{ margin:0 0 8px 0; font-size:13px; color:#203243; }
+    .news-item a{ color:#0a3d62; text-decoration:none; font-weight:700; }
+    .news-item a:hover{ text-decoration:underline; }
+
     .inventory{ margin-top:18px; }
     .products{ display:flex; flex-wrap:wrap; justify-content:center; gap:16px; }
     .card{ width:240px; background:#fff; border:1px solid #e3ebf5; border-radius:4px; box-shadow:0 1px 0 #ecf2f9; padding:10px; }
@@ -151,6 +177,8 @@
     @media (max-width:1024px){
       .search-grid{ grid-template-columns: 1fr 1fr; }
       .vin-line{ margin-left:0; }
+      .content-with-news{ flex-direction:column; }
+      .news-box{ width:auto; position:static; }
     }
   </style>
 </head>
@@ -259,25 +287,40 @@
       </form>
     </div>
 
-    <section class="panel content-pad">
-      <div class="notice">
-        This alternate page uses the same layout — you can customize copy and links independently.
+    <!-- Content + Right News -->
+    <div class="content-with-news">
+      <div class="content-main">
+        <section class="panel content-pad">
+          <div class="notice">
+            This alternate page uses the same layout — you can customize copy and links independently.
+          </div>
+
+          <div class="inventory">
+            <div class="products">
+              {% for product in products %}
+              <div class="card">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <h4>{{ product.name }}</h4>
+                <p>{{ product.description }}</p>
+                <p><strong>Phone:</strong> {{ product.phone }}</p>
+                <p><strong>Category:</strong> {{ product.category }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div class="inventory">
-        <div class="products">
-          {% for product in products %}
-          <div class="card">
-            <img src="{{ product.image }}" alt="{{ product.name }}">
-            <h4>{{ product.name }}</h4>
-            <p>{{ product.description }}</p>
-            <p><strong>Phone:</strong> {{ product.phone }}</p>
-            <p><strong>Category:</strong> {{ product.category }}</p>
-          </div>
-          {% endfor %}
+      <!-- Slim News Box -->
+      <aside class="news-box panel" aria-label="Latest News">
+        <div class="news-head">News</div>
+        <div class="news-body">
+          <p class="news-item"><a href="#">Holiday Hours</a> — Open Saturday 9–1, closed Sunday.</p>
+          <p class="news-item"><a href="#">Price Drop</a> — Alternators starting at $65.</p>
+          <p class="news-item"><a href="#">Trade-Ins</a> — Ask about core return credits.</p>
         </div>
-      </div>
-    </section>
+      </aside>
+    </div>
 
     <footer>
       © {{ 2025 }} Recycled Auto Parts Market — Alt.
