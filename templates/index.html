@@ -302,12 +302,37 @@
       font-size:13px;
     }
 
-    /* Responsive */
+    /* Tablet */
     @media (max-width:1024px){
       .search-grid{ grid-template-columns: 1fr 1fr; }
       .vin-line{ margin-left:0; }
       .content-with-news{ flex-direction:column; }
       .news-box{ width:auto; position:static; }
+    }
+
+    /* Mobile polish */
+    @media (max-width: 600px){
+      .banner-inner{ flex-wrap:wrap; gap:10px; }
+      .site-title{ font-size:20px; }
+      .site-sub{ font-size:12px; }
+
+      .quicklinks-row{
+        justify-content:flex-start;
+        gap:8px;
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom:10px;
+      }
+      .quicklinks-row a{ white-space:nowrap; }
+
+      .search-grid{ grid-template-columns: 1fr; }
+
+      .card{ width:100%; }
+
+      .content-with-news{ flex-direction:column; gap:12px; }
+      .news-box{ width:100%; position:static; }
+
+      .hc-content{ width:min(88vw, 320px); left:50%; transform:translate(-50%, 8px); }
     }
   </style>
 </head>
