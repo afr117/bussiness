@@ -23,7 +23,7 @@
     .banner{ background: linear-gradient(180deg, var(--cp-blue) 0%, #124e7e 100%); color:#fff; padding:14px 0; border-bottom:4px solid var(--cp-accent); }
     .banner-inner{ max-width:var(--maxw); margin:0 auto; padding:0 10px; display:flex; align-items:center; gap:16px; box-sizing:border-box; }
 
-    /* BRAND ROW (logo + text) */
+    /* BRAND ROW */
     .brand-row{ display:flex; align-items:center; gap:12px; }
     .site-logo{
       display:block; height:48px; width:auto;
@@ -52,7 +52,7 @@
     .quicklinks-row a{ color:#16496f; text-decoration:none; font-size:14px; font-weight:600; padding:6px 10px; border-radius:4px; border:1px solid transparent; white-space:nowrap; }
     .quicklinks-row a:hover{ background:#e9f3ff; border-color:#cfe5ff; }
 
-    /* Hovercard (About/Contact) */
+    /* Hovercard */
     .hovercard{ position:relative; display:inline-block; }
     .hovercard:focus-within .hc-content,
     .hovercard:hover .hc-content{ opacity:1; visibility:visible; transform:translate(-50%, 0); pointer-events:auto; }
@@ -136,23 +136,20 @@
       <h3 class="quicklinks-title">Quick Links</h3>
       <div class="quicklinks-row">
         <a href="{{ url_for('home') }}">Home</a>
-        <a href="#search">Buy Parts</a>
+        <a href="{{ url_for('alt_page', category='Buy Parts') }}">Buy Parts</a>
         <a href="#">Language</a>
 
-        <!-- category pills link here with a ?category= query -->
         <a href="{{ url_for('alt_page', category='Wheels & Tires') }}">Wheels &amp; Tires</a>
         <a href="{{ url_for('alt_page', category='Electrical Components') }}">Electrical Components</a>
         <a href="{{ url_for('alt_page', category='Interior Parts') }}">Interior Parts</a>
 
-        <!-- About Us hovercard -->
+        <!-- About / Contact hovercards -->
         <div class="hovercard">
           <a href="#" class="hc-trigger" tabindex="0">About Us</a>
           <div class="hc-content" role="dialog" aria-label="About Us">
             We’re a local network of recyclers offering quality-tested used parts at fair prices. Warranty available on most items.
           </div>
         </div>
-
-        <!-- Contact Us hovercard -->
         <div class="hovercard">
           <a href="#" class="hc-trigger" tabindex="0">Contact Us</a>
           <div class="hc-content" role="dialog" aria-label="Contact Us">
@@ -171,7 +168,7 @@
         {% if filter_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ filter_category }}</small>{% endif %}
       </h2>
 
-      {% set preset_cats = ["Wheels & Tires","Electrical Components","Interior Parts"] %}
+      {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
       <form method="get" action="{{ url_for('alt_page') }}">
         <div class="search-grid">
           <div>
@@ -266,7 +263,7 @@
     </footer>
   </div>
 
-  <!-- Make→Model population (same as index) -->
+  <!-- Make→Model population -->
   <script>
     (function(){
       const MAKE_MODELS = {
