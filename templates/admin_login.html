@@ -1,44 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <title>Admin Login • Recycled Auto Parts Market</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#0a3d62">
+  <link rel="icon" href="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}">
+
   <style>
-    html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1d2a35;}
-    .wrap{max-width:420px;margin:8vh auto;background:#fff;border:1px solid #dfe7f1;border-radius:8px;box-shadow:0 6px 30px rgba(0,0,0,.06);overflow:hidden;}
-    .head{background:linear-gradient(180deg,#0a3d62 0%, #124e7e 100%);color:#fff;padding:14px 16px;border-bottom:4px solid #4e9ed4;}
-    .body{padding:18px;}
-    label{display:block;font-weight:700;margin:10px 0 6px;font-size:14px;}
-    input{width:100%;padding:10px;border:1px solid #cfd9e6;border-radius:6px;font-size:14px;}
-    button{margin-top:14px;background:#0a3d62;color:#fff;border:none;padding:10px 14px;border-radius:6px;font-weight:800;letter-spacing:.3px;cursor:pointer;}
-    button:hover{background:#0d4f80;}
-    .msg{margin-top:10px;color:#a33;}
+    :root{
+      --cp-blue:#0a3d62;
+      --cp-blue-2:#124e7e;
+      --cp-light:#eef3f8;
+      --cp-mid:#d9e3ef;
+      --cp-accent:#4e9ed4;
+      --cp-body:#f5f7fb;
+      --cp-text:#1d2a35;
+      --radius:8px;
+      --maxw:560px;
+    }
+    html,body{ margin:0; padding:0; background:var(--cp-body); color:var(--cp-text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif; line-height:1.35; }
+
+    /* Banner */
+    .banner{
+      background: linear-gradient(180deg, var(--cp-blue) 0%, var(--cp-blue-2) 100%);
+      color:#fff; padding:14px 0; border-bottom:4px solid var(--cp-accent);
+    }
+    .banner-inner{
+      max-width:var(--maxw); margin:0 auto; padding:0 12px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .site-logo{ height:40px; width:auto; border-radius:6px; box-shadow:0 0 0 1px rgba(255,255,255,.12) inset; }
+    .site-title{ margin:0; font-weight:800; text-transform:uppercase; font-size:20px; }
+    .spacer{ flex:1; }
+    .back-link{ color:#fff; text-decoration:none; font-weight:700; border:1px solid rgba(255,255,255,.3); padding:6px 10px; border-radius:6px; }
+    .back-link:hover{ background:rgba(255,255,255,.08); }
+
+    /* Login card */
+    .wrap{ max-width:var(--maxw); margin:18px auto 40px; padding:0 12px; }
+    .card{
+      background:#fff; border:1px solid #dfe7f1; box-shadow:0 1px 0 #ecf2f8; border-radius:var(--radius);
+    }
+    .card-head{
+      background:#f3f7fc; border-bottom:1px solid #e6edf5; padding:12px 14px; border-radius:var(--radius) var(--radius) 0 0;
+      font-weight:800; color:#2f506d; text-transform:uppercase; letter-spacing:.2px; font-size:13px;
+    }
+    .card-body{ padding:16px 14px; }
+
+    label{ font-size:12px; font-weight:800; color:#3a4a56; text-transform:uppercase; letter-spacing:.2px; }
+    input[type="text"], input[type="password"]{
+      width:100%; padding:10px 11px; border:1px solid #cfd9e6; border-radius:6px; font-size:14px; box-sizing:border-box; background:#fff;
+    }
+    .row{ display:flex; flex-direction:column; gap:10px; }
+    .actions{ margin-top:12px; display:flex; gap:10px; align-items:center; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px; border-radius:6px; font-weight:700; text-decoration:none; cursor:pointer;
+      border:1px solid transparent; font-size:14px;
+    }
+    .btn-primary{ background:var(--cp-blue); color:#fff; border-color:#0b3b5c; }
+    .btn-primary:hover{ background:#0d4f80; }
+
+    .flash{ margin:12px 0 0; padding:10px 12px; border-radius:6px; border:1px solid #f7c8c3; background:#fdecec; color:#842029; font-size:14px; }
+
+    footer{ text-align:center; color:#587188; font-size:13px; margin-top:22px; }
+
+    /* Mobile polish */
+    @media (max-width:600px){
+      .site-title{ font-size:18px; }
+      .card-body{ padding:14px 12px; }
+      .btn{ padding:10px 12px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="head"><strong>Admin Login</strong></div>
-    <div class="body">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="msg">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
 
-      <form action="{{ url_for('admin_login') }}" method="post">
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" required>
-
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" required>
-
-        <button type="submit">Sign In</button>
-      </form>
-      <p style="margin-top:12px;font-size:13px;"><a href="{{ url_for('home') }}">← Back to site</a></p>
+  <!-- Banner -->
+  <div class="banner">
+    <div class="banner-inner">
+      <img class="site-logo" src="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}" alt="Logo">
+      <h1 class="site-title">Admin Login</h1>
+      <div class="spacer"></div>
+      <a href="{{ url_for('home') }}" class="back-link">← Back to Site</a>
     </div>
+  </div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="card-head">Sign In</div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('admin_login') }}">
+          <div class="row">
+            <div>
+              <label for="username">Username</label><br>
+              <input id="username" type="text" name="username" autocomplete="username" required>
+            </div>
+            <div>
+              <label for="password">Password</label><br>
+              <input id="password" type="password" name="password" autocomplete="current-password" required>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">Log In</button>
+          </div>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              {% if category == 'error' %}
+                <div class="flash">{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+
+    <footer>© {{ 2025 }} Recycled Auto Parts Market — Admin</footer>
   </div>
 </body>
 </html>
