@@ -51,7 +51,7 @@
     .btn-primary{ background:var(--cp-blue); color:#fff; border:none; padding:10px 16px; border-radius:4px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; cursor:pointer; }
     .btn-primary:hover{ background:#0d4f80; }
     .vin-line{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    .vin-line input{ min-width:220px; }
+    .vin-line input{ min-width:220px; padding:9px 10px; border:1px solid #cfd9e6; border-radius:4px; background:#fff; box-sizing:border-box; font-size:14px; }
 
     .panel{ background:#fff; border:1px solid #dfe7f1; box-shadow:0 1px 0 #ecf2f8; border-radius:4px; margin-top:16px; }
     .content-pad{ padding:12px; }
@@ -132,7 +132,8 @@
     <div id="search" class="search-block panel">
       <h2 class="search-title">
         Find Used Auto Parts
-        {% if selected_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ selected_category }}</small>{% endif %}
+        {% set filter_category = selected_category %}
+        {% if filter_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ filter_category }}</small>{% endif %}
       </h2>
 
       {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
@@ -177,6 +178,7 @@
 
         <div class="search-actions">
           <button class="btn-primary" type="submit">Search Parts</button>
+
           <div class="vin-line">
             <label for="vin"><strong>VIN Lookup:</strong></label>
             <input id="vin" name="vin" type="text" maxlength="17" placeholder="Enter 17-digit VIN" />
@@ -197,6 +199,15 @@
               <div class="card">
                 <img src="{{ product.image }}" alt="{{ product.name }}">
                 <h4>{{ product.name }}</h4>
+
+                {% if product.year or product.make or product.model %}
+                  <p><strong>Spec:</strong>
+                    {% if product.year %}{{ product.year }}{% endif %}
+                    {% if product.make %} {{ product.make }}{% endif %}
+                    {% if product.model %} {{ product.model }}{% endif %}
+                  </p>
+                {% endif %}
+
                 <p>{{ product.description }}</p>
                 {% if product.phone %}<p><strong>Phone:</strong> {{ product.phone }}</p>{% endif %}
                 {% if product.category %}<p><strong>Category:</strong> {{ product.category }}</p>{% endif %}
@@ -220,7 +231,7 @@
     <footer>© {{ 2025 }} Recycled Auto Parts Market — Alt.</footer>
   </div>
 
-  <!-- Make→Model population + pre-select -->
+  <!-- Make→Model population (with preselect from URL) -->
   <script>
     (function(){
       const MAKE_MODELS = {
@@ -241,12 +252,17 @@
       const modelSel = document.getElementById('model');
 
       Object.keys(MAKE_MODELS).sort().forEach(m=>{
-        const opt = document.createElement('option'); opt.value = m; opt.textContent = m; makeSel.appendChild(opt);
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        makeSel.appendChild(opt);
       });
 
       function fillModelsForMake(mk, presetModel=''){
         modelSel.innerHTML = '';
-        const any = document.createElement('option'); any.value = ''; any.textContent = 'Any'; modelSel.appendChild(any);
+        const any = document.createElement('option');
+        any.value = ''; any.textContent = 'Any';
+        modelSel.appendChild(any);
+
         if (mk && MAKE_MODELS[mk]) {
           MAKE_MODELS[mk].forEach(md=>{
             const o=document.createElement('option'); o.value=md; o.textContent=md;
