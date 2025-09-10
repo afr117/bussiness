@@ -35,7 +35,7 @@
     .banner-btn{ background:#fff; color:var(--cp-blue); border:1px solid #e6edf5; padding:8px 12px; border-radius:4px; font-weight:600; text-decoration:none; font-size:14px; box-shadow:0 1px 0 rgba(0,0,0,.05); }
     .banner-btn:hover{ background:#f7fafd; }
 
-    /* ===== Full-bleed Quick Links (matches banner width) ===== */
+    /* ===== Full-bleed Quick Links ===== */
     .quicklinks-outer{
       width:100%;
       background:#f3f7fc;
@@ -43,89 +43,36 @@
       border-bottom:1px solid #e6edf5;
       box-shadow:0 1px 0 #ecf2f8 inset;
     }
-    .quicklinks-inner{
-      max-width:var(--maxw);
-      margin:0 auto;
-      padding:0 10px;
-    }
-    .quicklinks-title{
-      margin:0;
-      padding:10px 0 0 0;
-      font-size:14px;
-      font-weight:800;
-      color:#2f506d;
-      text-transform:uppercase;
-      letter-spacing:.2px;
-    }
+    .quicklinks-inner{ max-width:var(--maxw); margin:0 auto; padding:0 10px; }
+    .quicklinks-title{ margin:0; padding:10px 0 0 0; font-size:14px; font-weight:800; color:#2f506d; text-transform:uppercase; letter-spacing:.2px; }
     .quicklinks-row{
-      display:flex;
-      justify-content:space-evenly;
-      align-items:center;
-      gap:12px;
-      padding:10px 0 12px;
-      flex-wrap:wrap;
+      display:flex; justify-content:space-evenly; align-items:center;
+      gap:12px; padding:10px 0 12px; flex-wrap:wrap;
     }
-    .quicklinks-row a{
-      color:#16496f;
-      text-decoration:none;
-      font-size:14px;
-      font-weight:600;
-      padding:6px 10px;
-      border-radius:4px;
-      border:1px solid transparent;
-      white-space:nowrap;
-    }
-    .quicklinks-row a:hover{
-      background:#e9f3ff;
-      border-color:#cfe5ff;
-    }
+    .quicklinks-row a{ color:#16496f; text-decoration:none; font-size:14px; font-weight:600; padding:6px 10px; border-radius:4px; border:1px solid transparent; white-space:nowrap; }
+    .quicklinks-row a:hover{ background:#e9f3ff; border-color:#cfe5ff; }
 
     /* Hovercard (About/Contact) */
     .hovercard{ position:relative; display:inline-block; }
     .hovercard:focus-within .hc-content,
-    .hovercard:hover .hc-content{
-      opacity:1; visibility:visible; transform:translate(-50%, 0);
-      pointer-events:auto;
-    }
+    .hovercard:hover .hc-content{ opacity:1; visibility:visible; transform:translate(-50%, 0); pointer-events:auto; }
     .hc-trigger{ outline:none; }
     .hc-content{
-      position:absolute;
-      left:50%; top:120%;
-      transform:translate(-50%, 8px);
-      width:260px;
-      background:var(--tooltip-bg);
-      border:1px solid #e6edf5;
-      box-shadow:0 8px 20px rgba(0,0,0,.08);
-      border-radius:6px;
-      padding:10px 12px;
-      font-size:13px;
-      color:#203243;
-      z-index:50;
-      opacity:0; visibility:hidden; pointer-events:none;
+      position:absolute; left:50%; top:120%; transform:translate(-50%, 8px);
+      width:260px; background:var(--tooltip-bg); border:1px solid #e6edf5;
+      box-shadow:0 8px 20px rgba(0,0,0,.08); border-radius:6px; padding:10px 12px;
+      font-size:13px; color:#203243; z-index:50; opacity:0; visibility:hidden; pointer-events:none;
       transition:opacity .15s ease, transform .15s ease, visibility .15s ease;
     }
-    .hc-content::before{
-      content:"";
-      position:absolute;
-      top:-6px; left:50%;
-      transform:translateX(-50%);
-      border-width:6px; border-style:solid;
-      border-color:transparent transparent #e6edf5 transparent;
-    }
-    .hc-content::after{
-      content:"";
-      position:absolute;
-      top:-5px; left:50%;
-      transform:translateX(-50%);
-      border-width:5px; border-style:solid;
-      border-color:transparent transparent var(--tooltip-bg) transparent;
-    }
+    .hc-content::before{ content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%); border-width:6px; border-style:solid; border-color:transparent transparent #e6edf5 transparent; }
+    .hc-content::after{ content:""; position:absolute; top:-5px; left:50%; transform:translateX(-50%); border-width:5px; border-style:solid; border-color:transparent transparent var(--tooltip-bg) transparent; }
 
     .search-block{ background:var(--cp-light); border:1px solid var(--cp-mid); border-top:none; padding:16px 14px; box-shadow:0 2px 0 #e6edf5 inset; border-radius:4px; margin-top:8px; }
     .search-title{ margin:0 0 10px 0; color:var(--cp-blue); font-weight:800; font-size:18px; text-transform:uppercase; letter-spacing:.2px; }
     .search-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:10px; }
     .search-grid label{ font-size:12px; font-weight:700; color:#3a4a56; display:block; margin-bottom:4px; text-transform:uppercase; }
-    .search-grid input[type="text"], .search-grid select{ width:100%; padding:9px 10px; border:1px solid #cfd9e6; border-radius:4px; background:#fff; box-sizing:border-box; font-size:14px; }
+    .search-grid select{ width:100%; padding:9px 10px; border:1px solid #cfd9e6; border-radius:4px; background:#fff; box-sizing:border-box; font-size:14px; }
+
     .search-actions{ margin-top:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .btn-primary{ background:var(--cp-blue); color:#fff; border:none; padding:10px 16px; border-radius:4px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; cursor:pointer; }
     .btn-primary:hover{ background:#0d4f80; }
@@ -136,30 +83,11 @@
     .content-pad{ padding:12px; }
     .notice{ background:#fffbec; border:1px solid #f1e4b6; padding:10px 12px; border-radius:4px; font-size:14px; color:#5c4b1e; }
 
-    /* RIGHT NEWS BOX LAYOUT */
-    .content-with-news{
-      display:flex;
-      align-items:flex-start;
-      gap:16px;
-      margin-top:16px;
-    }
+    /* RIGHT NEWS BOX */
+    .content-with-news{ display:flex; align-items:flex-start; gap:16px; margin-top:16px; }
     .content-main{ flex:1; min-width:0; }
-    .news-box{
-      width:220px;
-      position:sticky;
-      top:12px;
-      align-self:flex-start;
-    }
-    .news-head{
-      background:var(--cp-blue);
-      color:#fff;
-      padding:10px 12px;
-      border-radius:4px 4px 0 0;
-      font-size:14px;
-      font-weight:800;
-      letter-spacing:.2px;
-      text-transform:uppercase;
-    }
+    .news-box{ width:220px; position:sticky; top:12px; align-self:flex-start; }
+    .news-head{ background:var(--cp-blue); color:#fff; padding:10px 12px; border-radius:4px 4px 0 0; font-size:14px; font-weight:800; letter-spacing:.2px; text-transform:uppercase; }
     .news-body{ padding:10px 12px; }
     .news-item{ margin:0 0 8px 0; font-size:13px; color:#203243; }
     .news-item a{ color:#0a3d62; text-decoration:none; font-weight:700; }
@@ -210,10 +138,11 @@
         <a href="{{ url_for('home') }}">Home</a>
         <a href="#search">Buy Parts</a>
         <a href="#">Language</a>
-        <!-- restored buttons -->
-        <a href="#">Wheels &amp; Tires</a>
-        <a href="#">Electrical Components</a>
-        <a href="#">Interior Parts</a>
+
+        <!-- category pills link here with a ?category= query -->
+        <a href="{{ url_for('alt_page', category='Wheels & Tires') }}">Wheels &amp; Tires</a>
+        <a href="{{ url_for('alt_page', category='Electrical Components') }}">Electrical Components</a>
+        <a href="{{ url_for('alt_page', category='Interior Parts') }}">Interior Parts</a>
 
         <!-- About Us hovercard -->
         <div class="hovercard">
@@ -236,7 +165,11 @@
 
   <div class="page-wrap">
     <div id="search" class="search-block panel">
-      <h2 class="search-title">Find Used Auto Parts</h2>
+      <h2 class="search-title">
+        Find Used Auto Parts
+        {% set filter_category = request.args.get('category') %}
+        {% if filter_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ filter_category }}</small>{% endif %}
+      </h2>
 
       {% set preset_cats = ["Wheels & Tires","Electrical Components","Interior Parts"] %}
       <form method="get" action="{{ url_for('alt_page') }}">
@@ -250,26 +183,31 @@
               {% endfor %}
             </select>
           </div>
+
           <div>
             <label for="make">Make</label>
-            <input id="make" name="make" type="text" placeholder="e.g. Ford" />
+            <select id="make" name="make">
+              <option value="">Any</option>
+            </select>
           </div>
+
           <div>
             <label for="model">Model</label>
-            <input id="model" name="model" type="text" placeholder="e.g. Focus" />
+            <select id="model" name="model" disabled>
+              <option value="">Any</option>
+            </select>
           </div>
+
           <div>
             <label for="category">Part Category</label>
             <select id="category" name="category">
               <option value="">All Categories</option>
-              <!-- preset categories shown first -->
               {% for name in preset_cats %}
-                <option value="{{ name }}" {% if selected_category == name %}selected{% endif %}>{{ name }}</option>
+                <option value="{{ name }}" {% if (request.args.get('category') or selected_category) == name %}selected{% endif %}>{{ name }}</option>
               {% endfor %}
-              <!-- rest of categories, avoiding duplicates -->
               {% for c in categories %}
                 {% if c not in preset_cats %}
-                  <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
+                  <option value="{{ c }}" {% if (request.args.get('category') or selected_category) == c %}selected{% endif %}>{{ c }}</option>
                 {% endif %}
               {% endfor %}
             </select>
@@ -292,12 +230,13 @@
       <div class="content-main">
         <section class="panel content-pad">
           <div class="notice">
-            This alternate page uses the same layout — you can customize copy and links independently.
+            This alternate page uses the same layout — category filtering is applied when you follow a Quick Link.
           </div>
 
           <div class="inventory">
             <div class="products">
-              {% for product in products %}
+              {% set filter_category = request.args.get('category') %}
+              {% for product in products if not filter_category or product.category == filter_category %}
               <div class="card">
                 <img src="{{ product.image }}" alt="{{ product.name }}">
                 <h4>{{ product.name }}</h4>
@@ -326,5 +265,51 @@
       © {{ 2025 }} Recycled Auto Parts Market — Alt.
     </footer>
   </div>
+
+  <!-- Make→Model population (same as index) -->
+  <script>
+    (function(){
+      const MAKE_MODELS = {
+        "Ford": ["F-150","Focus","Fusion","Escape","Explorer"],
+        "Chevrolet": ["Silverado","Malibu","Cruze","Equinox","Tahoe"],
+        "Toyota": ["Camry","Corolla","RAV4","Tacoma","Highlander"],
+        "Honda": ["Civic","Accord","CR-V","Pilot","Odyssey"],
+        "Nissan": ["Altima","Sentra","Rogue","Frontier","Pathfinder"],
+        "BMW": ["3 Series","5 Series","X3","X5"],
+        "Mercedes-Benz": ["C-Class","E-Class","GLC","GLE"],
+        "Volkswagen": ["Jetta","Passat","Tiguan","Golf"]
+      };
+
+      const makeSel = document.getElementById('make');
+      const modelSel = document.getElementById('model');
+
+      Object.keys(MAKE_MODELS).sort().forEach(m=>{
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        makeSel.appendChild(opt);
+      });
+
+      function fillModelsForMake(mk){
+        modelSel.innerHTML = '';
+        const any = document.createElement('option');
+        any.value = ''; any.textContent = 'Any';
+        modelSel.appendChild(any);
+
+        if (mk && MAKE_MODELS[mk]) {
+          MAKE_MODELS[mk].forEach(md=>{
+            const o = document.createElement('option');
+            o.value = md; o.textContent = md;
+            modelSel.appendChild(o);
+          });
+          modelSel.disabled = false;
+        } else {
+          modelSel.disabled = false;
+        }
+      }
+
+      makeSel.addEventListener('change', (e)=> fillModelsForMake(e.target.value));
+      fillModelsForMake('');
+    })();
+  </script>
 </body>
 </html>
