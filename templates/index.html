@@ -111,7 +111,7 @@
     </div>
   </div>
 
-  <!-- Full-bleed Quick Links -->
+  <!-- Full-bleed Quick Links (top bar) -->
   <div class="quicklinks-outer">
     <div class="quicklinks-inner">
       <h3 class="quicklinks-title">Quick Links</h3>
@@ -229,7 +229,7 @@
     <footer>© {{ 2025 }} Recycled Auto Parts Market – Layout adapted for your catalog.</footer>
   </div>
 
-  <!-- Make→Model population -->
+  <!-- Make→Model population + pre-select from URL -->
   <script>
     (function(){
       const MAKE_MODELS = {
@@ -242,6 +242,10 @@
         "Mercedes-Benz": ["C-Class","E-Class","GLC","GLE"],
         "Volkswagen": ["Jetta","Passat","Tiguan","Golf"]
       };
+      const params = new URLSearchParams(location.search);
+      const initialMake = params.get('make') || '';
+      const initialModel = params.get('model') || '';
+
       const makeSel = document.getElementById('make');
       const modelSel = document.getElementById('model');
 
@@ -249,18 +253,24 @@
         const opt = document.createElement('option'); opt.value = m; opt.textContent = m; makeSel.appendChild(opt);
       });
 
-      function fillModelsForMake(mk){
+      function fillModelsForMake(mk, presetModel=''){
         modelSel.innerHTML = '';
         const any = document.createElement('option'); any.value = ''; any.textContent = 'Any'; modelSel.appendChild(any);
         if (mk && MAKE_MODELS[mk]) {
-          MAKE_MODELS[mk].forEach(md=>{ const o=document.createElement('option'); o.value=md; o.textContent=md; modelSel.appendChild(o); });
+          MAKE_MODELS[mk].forEach(md=>{
+            const o=document.createElement('option'); o.value=md; o.textContent=md;
+            if (presetModel && presetModel===md) o.selected = true;
+            modelSel.appendChild(o);
+          });
           modelSel.disabled = false;
         } else {
           modelSel.disabled = false;
         }
       }
+
       makeSel.addEventListener('change', e=> fillModelsForMake(e.target.value));
-      fillModelsForMake('');
+      if (initialMake) makeSel.value = initialMake;
+      fillModelsForMake(initialMake, initialModel);
     })();
   </script>
 </body>
