@@ -132,8 +132,7 @@
     <div id="search" class="search-block panel">
       <h2 class="search-title">
         Find Used Auto Parts
-        {% set filter_category = selected_category %}
-        {% if filter_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ filter_category }}</small>{% endif %}
+        {% if selected_category %}<small style="font-size:13px; font-weight:600; color:#315a77;">&nbsp;— Showing: {{ selected_category }}</small>{% endif %}
       </h2>
 
       {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
@@ -221,7 +220,7 @@
     <footer>© {{ 2025 }} Recycled Auto Parts Market — Alt.</footer>
   </div>
 
-  <!-- Make→Model population (same as index) -->
+  <!-- Make→Model population + pre-select -->
   <script>
     (function(){
       const MAKE_MODELS = {
@@ -234,6 +233,10 @@
         "Mercedes-Benz": ["C-Class","E-Class","GLC","GLE"],
         "Volkswagen": ["Jetta","Passat","Tiguan","Golf"]
       };
+      const params = new URLSearchParams(location.search);
+      const initialMake = params.get('make') || '';
+      const initialModel = params.get('model') || '';
+
       const makeSel = document.getElementById('make');
       const modelSel = document.getElementById('model');
 
@@ -241,18 +244,24 @@
         const opt = document.createElement('option'); opt.value = m; opt.textContent = m; makeSel.appendChild(opt);
       });
 
-      function fillModelsForMake(mk){
+      function fillModelsForMake(mk, presetModel=''){
         modelSel.innerHTML = '';
         const any = document.createElement('option'); any.value = ''; any.textContent = 'Any'; modelSel.appendChild(any);
         if (mk && MAKE_MODELS[mk]) {
-          MAKE_MODELS[mk].forEach(md=>{ const o=document.createElement('option'); o.value=md; o.textContent=md; modelSel.appendChild(o); });
+          MAKE_MODELS[mk].forEach(md=>{
+            const o=document.createElement('option'); o.value=md; o.textContent=md;
+            if (presetModel && presetModel===md) o.selected = true;
+            modelSel.appendChild(o);
+          });
           modelSel.disabled = false;
         } else {
           modelSel.disabled = false;
         }
       }
+
       makeSel.addEventListener('change', e=> fillModelsForMake(e.target.value));
-      fillModelsForMake('');
+      if (initialMake) makeSel.value = initialMake;
+      fillModelsForMake(initialMake, initialModel);
     })();
   </script>
 </body>
