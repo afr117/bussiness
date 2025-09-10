@@ -5,7 +5,7 @@
   <title>Admin Panel • Recycled Auto Parts Market</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Optional: keep your PWA bits the same as the public site -->
+  <!-- Match public site -->
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#0a3d62">
   <link rel="icon" href="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}">
@@ -21,7 +21,7 @@
       --cp-text:#1d2a35;
       --ok:#1f7a39;
       --err:#b3261e;
-      --maxw:1100px; /* a little wider for admin */
+      --maxw:1100px;
       --radius:8px;
     }
 
@@ -30,7 +30,7 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif; line-height:1.35;
     }
 
-    /* Top banner matches public site */
+    /* Banner (same gradient as site) */
     .banner{
       background: linear-gradient(180deg, var(--cp-blue) 0%, var(--cp-blue-2) 100%);
       color:#fff; padding:14px 0; border-bottom:4px solid var(--cp-accent);
@@ -117,9 +117,23 @@
 
     footer{ margin-top:26px; text-align:center; color:#587188; font-size:13px; }
 
-    /* Responsive */
+    /* Tablet */
     @media (max-width:1100px){
       .admin-grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Mobile polish */
+    @media (max-width:600px){
+      .banner-inner{ flex-wrap:wrap; gap:10px; }
+      .site-title{ font-size:20px; }
+      .site-sub{ font-size:12px; }
+      .page-wrap{ padding:12px 8px 28px; }
+      .panel-head{ padding:10px 12px; font-size:12px; }
+      .panel-body{ padding:12px; }
+      .form-row{ grid-template-columns: 1fr; }
+      .products{ grid-template-columns: 1fr; }
+      .thumb{ height:160px; }
+      .btn{ padding:10px 12px; font-size:14px; }
     }
   </style>
 </head>
