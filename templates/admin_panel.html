@@ -2,105 +2,291 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel</title>
+  <title>Admin Panel • Recycled Auto Parts Market</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Optional: keep your PWA bits the same as the public site -->
   <link rel="manifest" href="/static/manifest.json">
-  <meta name="theme-color" content="#0d6efd">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta name="theme-color" content="#0a3d62">
+  <link rel="icon" href="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}">
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
-    .admin-container { margin-top: 30px; }
-    input, textarea, select { padding: 6px; margin: 6px 0 12px; width: 320px; max-width: 100%; }
-    button { padding: 8px 12px; }
-    .muted { color:#555; font-size:13px; }
+    :root{
+      --cp-blue:#0a3d62;
+      --cp-blue-2:#124e7e;
+      --cp-light:#eef3f8;
+      --cp-mid:#d9e3ef;
+      --cp-accent:#4e9ed4;
+      --cp-body:#f5f7fb;
+      --cp-text:#1d2a35;
+      --ok:#1f7a39;
+      --err:#b3261e;
+      --maxw:1100px; /* a little wider for admin */
+      --radius:8px;
+    }
+
+    html,body{
+      margin:0; padding:0; background:var(--cp-body); color:var(--cp-text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif; line-height:1.35;
+    }
+
+    /* Top banner matches public site */
+    .banner{
+      background: linear-gradient(180deg, var(--cp-blue) 0%, var(--cp-blue-2) 100%);
+      color:#fff; padding:14px 0; border-bottom:4px solid var(--cp-accent);
+    }
+    .banner-inner{
+      max-width:var(--maxw); margin:0 auto; padding:0 12px;
+      display:flex; align-items:center; gap:16px; box-sizing:border-box;
+    }
+    .brand-row{ display:flex; align-items:center; gap:12px; }
+    .site-logo{ height:44px; width:auto; border-radius:6px; box-shadow:0 0 0 1px rgba(255,255,255,.12) inset; }
+    .site-title{ margin:0; font-weight:800; letter-spacing:.2px; text-transform:uppercase; font-size:22px; line-height:1.2; }
+    .site-sub{ font-size:12px; opacity:.9; margin-top:2px; }
+    .banner-actions{ margin-left:auto; display:flex; gap:10px; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:9px 14px; border-radius:6px; font-weight:700; text-decoration:none; cursor:pointer;
+      border:1px solid transparent; font-size:14px;
+    }
+    .btn-light{ background:#fff; color:var(--cp-blue); border-color:#e6edf5; }
+    .btn-light:hover{ background:#f7fafd; }
+    .btn-ghost{ background:transparent; color:#fff; border-color:rgba(255,255,255,.25); }
+    .btn-ghost:hover{ background:rgba(255,255,255,.08); }
+
+    .page-wrap{ max-width:var(--maxw); margin:0 auto; padding:16px 12px 40px; box-sizing:border-box; }
+
+    /* Layout: form left, product list right */
+    .admin-grid{
+      display:grid; grid-template-columns: 460px 1fr; gap:16px; align-items:start;
+    }
+
+    /* Cards / panels */
+    .panel{
+      background:#fff; border:1px solid #dfe7f1; box-shadow:0 1px 0 #ecf2f8;
+      border-radius:var(--radius);
+    }
+    .panel-head{
+      background:#f3f7fc; border-bottom:1px solid #e6edf5;
+      padding:12px 14px; border-radius:var(--radius) var(--radius) 0 0;
+      font-weight:800; color:#2f506d; letter-spacing:.2px; text-transform:uppercase; font-size:13px;
+    }
+    .panel-body{ padding:14px; }
+
+    /* Form styles */
+    .form-row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .form-col{ display:flex; flex-direction:column; gap:10px; }
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    label{ font-size:12px; font-weight:800; color:#3a4a56; text-transform:uppercase; letter-spacing:.2px; }
+    input[type="text"], input[type="number"], textarea, select{
+      width:100%; padding:10px 11px; border:1px solid #cfd9e6; border-radius:6px; background:#fff; font-size:14px; box-sizing:border-box;
+    }
+    textarea{ min-height:84px; resize:vertical; }
+    .hint{ font-size:12px; color:#667788; }
+
+    .actions{ display:flex; gap:10px; align-items:center; margin-top:8px; }
+    .btn-primary{ background:var(--cp-blue); color:#fff; border-color:#0b3b5c; }
+    .btn-primary:hover{ background:#0d4f80; }
+    .btn-danger{ background:#ffecec; color:#8a0d0d; border-color:#ffbcbc; }
+    .btn-danger:hover{ background:#ffdede; }
+
+    /* Flash messages */
+    .flash{ margin:0 0 12px; padding:10px 12px; border-radius:6px; border:1px solid #e6edf5; font-size:14px; }
+    .flash.ok{ background:#eaf6ee; border-color:#cfe9d6; color:#1f5e35; }
+    .flash.err{ background:#fdecec; border-color:#f7c8c3; color:#842029; }
+
+    /* Product list */
+    .list-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .muted{ color:#556; font-size:13px; }
+    .products{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:12px; margin-top:12px; }
+    .card{
+      border:1px solid #e3ebf5; border-radius:6px; padding:10px;
+      background:#fff; box-shadow:0 1px 0 #ecf2f9;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .thumb{
+      width:100%; height:150px; border-radius:6px; background:#f4f6fb; border:1px solid #ecf2f9;
+      display:flex; align-items:center; justify-content:center; overflow:hidden;
+    }
+    .thumb img{ max-width:100%; max-height:100%; object-fit:cover; }
+    .title{ font-size:15px; font-weight:800; color:#123f63; margin:0; }
+    .meta{ font-size:12px; color:#38556b; }
+    .desc{ font-size:13px; color:#203243; }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .price{ font-weight:800; color:#114b71; }
+
+    footer{ margin-top:26px; text-align:center; color:#587188; font-size:13px; }
+
+    /* Responsive */
+    @media (max-width:1100px){
+      .admin-grid{ grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <h1>Admin Panel</h1>
-
-  <form action="{{ url_for('admin_logout') }}" method="get" style="text-align:right;">
-      <button type="submit">Log Out</button>
-  </form>
-
-  <div class="admin-container">
-    <h2>Add New Product</h2>
-    {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
-    <form action="{{ url_for('add_product') }}" method="post" enctype="multipart/form-data">
-        <label>Product Name:</label><br>
-        <input type="text" name="name" required><br>
-
-        <label>Description:</label><br>
-        <textarea name="description" rows="3" required></textarea><br>
-
-        <label>Price:</label><br>
-        <input type="number" name="price" step="0.01" required><br>
-
-        <!-- Save Y/M/M with the product -->
-        <label>Year (optional):</label><br>
-        <input type="text" name="year" placeholder="e.g. 2018"><br>
-
-        <label>Make (optional):</label><br>
-        <input type="text" name="make" placeholder="e.g. Toyota"><br>
-
-        <label>Model (optional):</label><br>
-        <input type="text" name="model" placeholder="e.g. Camry"><br>
-
-        <label>Category:</label><br>
-        <select name="category" required>
-            <option value="">Select Category</option>
-            {% for c in preset_cats %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
-            {% for c in categories %}
-              {% if c not in preset_cats %}
-                <option value="{{ c }}">{{ c }}</option>
-              {% endif %}
-            {% endfor %}
-        </select><br>
-
-        <label>Upload Image:</label><br>
-        <input type="file" name="image" accept="image/*"><br><br>
-
-        <button type="submit">Add Product</button>
-    </form>
-
-    <hr>
-
-    <h2>Existing Products</h2>
-    {% if products %}
-        <ul>
-        {% for product in products %}
-            {% set price = product.get('price') %}
-            <li>
-                <strong>{{ product.name }}</strong>
-                {% if price is not none and price != '' %} — ${{ '%.2f'|format(price|float) }}{% endif %}
-                {% if product.category %} <em>({{ product.category }})</em> {% endif %}<br>
-
-                <!-- Show Year / Make / Model if present -->
-                <span class="muted">
-                  {% if product.year %}Year: {{ product.year }}{% endif %}
-                  {% if product.make %}{% if product.year %} • {% endif %}Make: {{ product.make }}{% endif %}
-                  {% if product.model %}{% if product.year or product.make %} • {% endif %}Model: {{ product.model }}{% endif %}
-                </span><br>
-
-                {{ product.description }}<br>
-
-                {% if product.image %}
-                    <img src="{{ product.image }}" width="100" alt="product image"><br>
-                {% endif %}
-
-                <form action="{{ url_for('delete_product', index=loop.index0) }}" method="post" style="display:inline">
-                    <button type="submit" onclick="return confirm('Delete this product?')">Delete</button>
-                </form>
-            </li>
-            <hr>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No products added yet.</p>
-    {% endif %}
-
-    <p><a href="{{ url_for('home') }}">Back to Site</a></p>
+  <!-- Banner -->
+  <div class="banner">
+    <div class="banner-inner">
+      <div class="brand-row">
+        <img class="site-logo" src="{{ url_for('static', filename='uploads/recycled_auto_parts_logo_1.png') }}" alt="Recycled Auto Parts logo">
+        <div>
+          <h1 class="site-title">Admin Panel</h1>
+          <div class="site-sub">Manage products, images, and categories</div>
+        </div>
+      </div>
+      <div class="banner-actions">
+        <a class="btn btn-ghost" href="{{ url_for('home') }}">← Back to Site</a>
+        <a class="btn btn-light" href="{{ url_for('admin_logout') }}">Log Out</a>
+      </div>
+    </div>
   </div>
 
+  <div class="page-wrap">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ 'ok' if category=='success' else 'err' if category=='error' else '' }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="admin-grid">
+
+      <!-- Add Product -->
+      <section class="panel">
+        <div class="panel-head">Add New Product</div>
+        <div class="panel-body">
+
+          {% set preset_cats = ["Buy Parts","Wheels & Tires","Electrical Components","Interior Parts"] %}
+
+          <form action="{{ url_for('add_product') }}" method="post" enctype="multipart/form-data">
+            <div class="form-col">
+              <div class="field">
+                <label for="name">Product Name</label>
+                <input id="name" type="text" name="name" required placeholder="e.g., Alternator 2.5L">
+              </div>
+
+              <div class="field">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required placeholder="Condition, mileage, notes..."></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="price">Price</label>
+                  <input id="price" type="number" name="price" step="0.01" required placeholder="e.g., 149.99">
+                </div>
+                <div class="field">
+                  <label for="category">Category</label>
+                  <select id="category" name="category" required>
+                    <option value="">Select Category</option>
+                    {% for c in preset_cats %}
+                      <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                    {% for c in categories %}
+                      {% if c not in preset_cats %}
+                        <option value="{{ c }}">{{ c }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="year">Year (optional)</label>
+                  <input id="year" type="text" name="year" placeholder="e.g., 2018">
+                </div>
+                <div class="field">
+                  <label for="make">Make (optional)</label>
+                  <input id="make" type="text" name="make" placeholder="e.g., Toyota">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="model">Model (optional)</label>
+                  <input id="model" type="text" name="model" placeholder="e.g., Camry">
+                </div>
+                <div class="field">
+                  <label for="image">Upload Image</label>
+                  <input id="image" type="file" name="image" accept="image/*">
+                  <div class="hint">JPG/PNG/WEBP/GIF — stored under <code>/static/uploads</code>.</div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button type="submit" class="btn btn-primary">Add Product</button>
+                <span class="hint">New products appear in the list on the right.</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Existing Products -->
+      <section class="panel">
+        <div class="panel-head">Existing Products</div>
+        <div class="panel-body">
+          <div class="list-head">
+            <div class="muted">
+              {% if products %}{{ products|length }} item{{ 's' if products|length != 1 }} total{% else %}No products yet{% endif %}
+            </div>
+            <a class="btn btn-light" href="{{ url_for('home') }}">View on Site</a>
+          </div>
+
+          {% if products %}
+            <div class="products">
+              {% for product in products %}
+                {% set price = product.get('price') %}
+                <div class="card">
+                  <div class="thumb">
+                    {% if product.image %}
+                      <img src="{{ product.image }}" alt="Product image">
+                    {% else %}
+                      <span class="muted">No image</span>
+                    {% endif %}
+                  </div>
+
+                  <h3 class="title">{{ product.name }}</h3>
+
+                  <div class="row">
+                    <div class="meta">
+                      {% if product.year %}{{ product.year }}{% endif %}
+                      {% if product.make %}{% if product.year %} · {% endif %}{{ product.make }}{% endif %}
+                      {% if product.model %}{% if product.year or product.make %} · {% endif %}{{ product.model }}{% endif %}
+                    </div>
+                    {% if price is not none and price != '' %}
+                      <div class="price">${{ '%.2f'|format(price|float) }}</div>
+                    {% endif %}
+                  </div>
+
+                  {% if product.category %}
+                    <div class="meta">Category: <strong>{{ product.category }}</strong></div>
+                  {% endif %}
+
+                  {% if product.description %}
+                    <div class="desc">{{ product.description }}</div>
+                  {% endif %}
+
+                  <form action="{{ url_for('delete_product', index=loop.index0) }}" method="post" class="actions" style="margin-top:6px;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this product?')">Delete</button>
+                  </form>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="muted" style="margin-top:12px;">Start by adding your first product using the form on the left.</p>
+          {% endif %}
+        </div>
+      </section>
+
+    </div>
+
+    <footer>© {{ 2025 }} Recycled Auto Parts Market — Admin</footer>
+  </div>
 </body>
 </html>
